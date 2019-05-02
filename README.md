@@ -22,22 +22,24 @@ O notebook `mascaramento.ipynb` carrega o arquivo original, inspeciona cada colu
 - **Python 3** — usado para executar o notebook
 - **pip** — para instalar os pacotes listados em `requirements.txt`
 - **Jupyter** — instalado pelas dependências do projeto
+- **dados/original.csv** — arquivo local com as respostas (não vai para o GitHub)
 
 ## Instalação
 
 ```bash
 git clone https://github.com/carlosrabelo/bullying.gphsc.git
 cd bullying.gphsc
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
+make configurar
 ```
+
+Copie o CSV completo para `dados/original.csv` (o repositório só versiona o cabeçalho em `dados/original.csv.exemplo`).
 
 ## Início Rápido
 
 ```bash
-source .venv/bin/activate
-jupyter notebook mascaramento.ipynb
+make limpar-dados   # formata o CSV local (opcional, mas recomendado)
+make iniciar          # abre o Jupyter com mascaramento.ipynb
+make parar           # encerra o Jupyter
 ```
 
 Execute todas as células em ordem. No final, o notebook grava `dados/bullying.csv`.
@@ -46,11 +48,13 @@ Execute todas as células em ordem. No final, o notebook grava `dados/bullying.c
 
 ### 1. Entenda a entrada
 
-As respostas originais estão em:
+As respostas originais ficam **apenas na sua máquina**:
 
 ```
 dados/original.csv
 ```
+
+O esquema (só cabeçalho) está em `dados/original.csv.exemplo`. Antes de analisar, rode `make limpar-dados` para padronizar espaços, idades e categorias sem apagar respostas.
 
 Abra o notebook e execute as primeiras células para carregar o arquivo e listar os nomes das colunas. Pergunte-se: quais campos poderiam identificar uma pessoa, mesmo de forma indireta?
 
@@ -79,23 +83,29 @@ Isso copia `dados/bullying.csv` para `../bullying/csv/original.csv`.
 ## Estrutura do Projeto
 
 ```
-dados/              # Dados da pesquisa (entrada original; saída gerada fica fora do Git)
-mascaramento.ipynb       # Notebook guiado de anonimização
-atualizar.sh         # Copia o CSV mascarado para um projeto irmão
-requirements.txt    # Dependências Python do notebook
+dados/original.csv.exemplo  # Cabeçalho do esquema (versionado)
+dados/original.csv          # Respostas completas (local, fora do Git)
+mascaramento.ipynb               # Notebook guiado de anonimização
+atualizar.sh                 # Copia o CSV mascarado para um projeto irmão
+requirements.txt            # Dependências Python do notebook
+Makefile                    # Atalhos make configurar / iniciar / parar / limpar-dados / atualizar
+configurar.sh iniciar.sh parar.sh   # Scripts usados pelo Makefile
+limpar-dados.py          # Formatação local de dados/original.csv
 ```
 
 ## Desenvolvimento
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-jupyter notebook mascaramento.ipynb   # Editar e reexecutar o fluxo de mascaramento
-./atualizar.sh                    # Atualizar a cópia no projeto destino
+make configurar         # Cria .venv e instala dependências
+make limpar-dados  # Formata e padroniza dados/original.csv
+make iniciar         # Inicia o Jupyter Notebook com mascaramento.ipynb
+make parar          # Para o Jupyter Notebook
+make ajuda          # Lista os alvos disponíveis
+make atualizar    # Copia o CSV mascarado para o projeto irmão
+./atualizar.sh
 ```
 
-O arquivo gerado `dados/bullying.csv` fica de fora do Git de propósito: regenere-o a partir do notebook sempre que as regras de mascaramento mudarem.
+O ambiente local fica em `.venv/` (ignorado pelo Git). Os arquivos `dados/original.csv`, `dados/original.csv.bak` e `dados/bullying.csv` também ficam de fora do Git.
 
 ## Licença
 

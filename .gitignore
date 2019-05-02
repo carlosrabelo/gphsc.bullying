@@ -138,6 +138,17 @@ dmypy.json
 
 # End of https://www.gitignore.io/api/python,jupyternotebooks
 
+# Editor
+.vscode/
+
+# Dados sensíveis (permanecem só na máquina local)
+dados/original.csv
+dados/original.csv.bak
+
 # Saída gerada pelo notebook de anonimização
 dados/bullying.csv
+
+# Controle local do Jupyter (make iniciar / make parar)
+.jupyter.pid
+.jupyter.log
 
